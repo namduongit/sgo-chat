@@ -7,7 +7,7 @@ import (
 )
 
 type Account struct {
-	ID       primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	ID       primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Email    string             `bson:"email" json:"email"`
 	Password string             `bson:"password" json:"-"`
 	CreateAt time.Time          `bson:"create_at" json:"create_at"`

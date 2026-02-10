@@ -1,22 +1,28 @@
 package controllers
 
 import (
-	service "github/sgo-chat/modules/services"
+	"github/sgo-chat/internals/configs"
+	"github/sgo-chat/modules/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 type AuthController struct {
-	authService *service.AuthService
+	authService *services.AuthService
 }
 
-func NewAuthController(authService *service.AuthService) *AuthController {
+func NewAuthController(authService *services.AuthService) *AuthController {
 	return &AuthController{
 		authService: authService,
 	}
 }
 
-func (ac *AuthController) RegisterController(c *gin.Context) {
-	// Route registration logic goes here
-	c.JSON(201, gin.H{"statusCode": 201})
+func (ac *AuthController) RegisterController(ctx *gin.Context) {
+	result, err := ac.authService.Register(ctx)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	res := configs.SuccessResponse(result)
+	ctx.JSON(int(res.StatusCode), &res)
 }

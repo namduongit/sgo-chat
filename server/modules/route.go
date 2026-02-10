@@ -1,20 +1,25 @@
-package controllers
+package modules
 
 import (
-	"github/sgo-chat/internal/config"
+	"github/sgo-chat/internals/configs"
+	"github/sgo-chat/middlewares"
 	"github/sgo-chat/modules/controllers"
 	"github/sgo-chat/modules/repositories"
-	service "github/sgo-chat/modules/services"
+	"github/sgo-chat/modules/services"
+	"github/sgo-chat/utils"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Setup(db *mongo.Database, cfg *config.Config) *gin.Engine {
+func Setup(db *mongo.Database, cfg *configs.Variable) *gin.Engine {
 	r := gin.Default()
+	r.Use(middlewares.GlobalExceptionHandler())
 
-	authRepository := repositories.NewAccountRepository(db.Collection("accounts"))
-	authService := service.NewAuthService(authRepository, cfg.JWTSecret)
+	profileRepository := repositories.NewProfileRepository(db.Collection("profiles"))
+	authRepository := repositories.NewAccountRepository(db.Collection("accounts"), &utils.Bcrypt{Cost: cfg.Crypto.Cost}, profileRepository)
+
+	authService := services.NewAuthService(authRepository, cfg.JWTSecret)
 
 	authController := controllers.NewAuthController(authService)
 
