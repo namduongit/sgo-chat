@@ -1,4 +1,4 @@
-package middlewares
+package filters
 
 import (
 	"github/sgo-chat/internals/configs"
@@ -18,6 +18,8 @@ func GlobalExceptionHandler() gin.HandlerFunc {
 
 			switch e := err.(type) {
 			case *errors.RestError:
+				log.Print("[Rest error] : ", err.Error())
+
 				ctx.JSON(int(e.Code), configs.RestResponse{
 					StatusCode: e.Code,
 					Message:    e.Message,
@@ -26,26 +28,21 @@ func GlobalExceptionHandler() gin.HandlerFunc {
 				})
 
 			case *errors.MongoError:
-				ctx.JSON(int(httpres.StatusInternalServerError), configs.RestResponse{
-					StatusCode: httpres.StatusInternalServerError,
-					Message:    httpres.InternalServerError,
-					Error:      err.Error(),
-					Data:       nil,
-				})
+				log.Print("[Mongo error] : ", err.Error())
 
-			case *errors.ServerError:
 				ctx.JSON(int(httpres.StatusInternalServerError), configs.RestResponse{
 					StatusCode: httpres.StatusInternalServerError,
 					Message:    httpres.InternalServerError,
-					Error:      e.Error(),
+					Error:      nil,
 					Data:       nil,
 				})
 
 			default:
+				log.Print("[Unknown error] : ", err.Error())
 				ctx.JSON(int(httpres.StatusBadRequest), configs.RestResponse{
 					StatusCode: httpres.StatusBadRequest,
 					Message:    httpres.BadRequest,
-					Error:      e.Error(),
+					Error:      nil,
 					Data:       nil,
 				})
 			}

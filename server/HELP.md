@@ -86,3 +86,9 @@ data, err := FetchData(ctx, "https://api.example.com")
 
 ```
 - Output: If API takes > 5 seconds, context will timeout and return error -> context prevents hanging requests
+
+## Flow API request
+Client Request -> Server
++ Server mapping controller
++ API -> Service -> Repository (optinal)
++ Service send DTO -> Repository

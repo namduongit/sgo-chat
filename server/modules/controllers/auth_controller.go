@@ -26,3 +26,13 @@ func (ac *AuthController) RegisterController(ctx *gin.Context) {
 	res := configs.SuccessResponse(result)
 	ctx.JSON(int(res.StatusCode), &res)
 }
+
+func (ac *AuthController) LoginController(ctx *gin.Context) {
+	result, err := ac.authService.Login(ctx)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	res := configs.SuccessResponse(result)
+	ctx.JSON(int(res.StatusCode), &res)
+}

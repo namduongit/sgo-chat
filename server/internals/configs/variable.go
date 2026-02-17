@@ -1,9 +1,7 @@
 package configs
 
 import (
-	"log"
 	"os"
-	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -18,26 +16,18 @@ type Variable struct {
 	MongoURL  string
 	DBname    string
 	JWTSecret string
-
-	Crypto Bcrypt
+	JWTExpire string
+	Cost      string
 }
 
 func Load() *Variable {
 	_ = godotenv.Load()
-
-	cost, err := strconv.Atoi(os.Getenv("BCRYPT_COST"))
-	if err != nil {
-		log.Fatalln("[Variable] Cost value require type is int")
-	}
-
 	return &Variable{
 		Port:      os.Getenv("PORT"),
 		MongoURL:  os.Getenv("MONGO_URL"),
 		DBname:    os.Getenv("DB_NAME"),
 		JWTSecret: os.Getenv("JWT_SECRET"),
-
-		Crypto: Bcrypt{
-			Cost: cost,
-		},
+		JWTExpire: os.Getenv("JWT_EXPIRE"),
+		Cost:      os.Getenv("COST"),
 	}
 }
